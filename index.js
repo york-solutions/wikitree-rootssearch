@@ -11,11 +11,13 @@ var profileFields = [
   'Spouses'
 ];
 
-// Setup button listeners
-document.getElementById('login-btn').addEventListener('click', login);
+var $body = $(document.body);
 
 // Check for query param
 var profileId = getQueryParam('profile');
+
+// Setup button listeners
+$('#login-btn').click(login);
 
 if(!profileId){
   // TODO: allow the ID to be input?
@@ -25,11 +27,11 @@ if(!profileId){
 setupLoginResponse(wikitree.checkLogin());
 
 function login(){
-  document.body.classList.add('loading');
-  document.body.classList.remove('login');
+  $body.addClass('loading');
+  $body.removeClass('login');
   setupLoginResponse(wikitree.login({
-    email: document.getElementById('email').value,
-    password: document.getElementById('password').value
+    email: $('#email').val(),
+    password: $('#password').val()
   }));
 }
 
@@ -41,8 +43,8 @@ function setupLoginResponse(promise){
 		loadProfile(profileId);
 	})
   .fail(function(){
-    document.body.classList.add('login');
-    document.body.classList.remove('loading');
+    $body.addClass('login');
+    $body.removeClass('loading');
   });
 }
 
