@@ -1,3 +1,16 @@
+var profileFields = [
+  'FirstName',
+  'LastNameAtBirth',
+  'BirthDate',
+  'BirthLocation',
+  'DeathDate',
+  'DeathLocation',
+  'Father',
+  'Mother',
+  'Parents',
+  'Spouses'
+];
+
 // Setup button listeners
 document.getElementById('login-btn').addEventListener('click', login);
 
@@ -34,18 +47,44 @@ function setupLoginResponse(promise){
 }
 
 function loadProfile(id){
-  wikitree.getPerson(id, ['Id','Name','FirstName','MiddleName','LastNameAtBirth','LastNameCurrent','BirthDate','DeathDate','Father','Mother','Spouse'])
-    .then(convertToRootsSearch);
+  wikitree.getPerson(id, profileFields).then(convertToRootsSearch);
 }
 
 function convertToRootsSearch(person){
-  var data = {};
+  var father = person.getFather(),
+      mother = person.getMother(),
+      spouse = person.getSpouse(),
+      data = {
+        givenName: person.getFirstName(),
+        familyName: person.getLastNameAtBirth(),
+        birthPlace: person.getBirthLocation(),
+        birthDate: person.getBirthDate(),
+        deathPlace: person.getDeathLocation(),
+        deathDate: person.getDeathDate(),
+      };
+
+  if(father){
+    data.fatherGivenName = father.getFirstName();
+    data.fatherFamilyName = father.getLastNameAtBirth();
+  }
+
+  if(mother){
+    data.motherGivenName = mother.getFirstName();
+    data.motherFamilyName = mother.getLastNameAtBirth();
+  }
+
+  if(spouse){
+    data.spouseGivenName = spouse.getFirstName();
+    data.spouseFamilyName = spouse.getLastNameAtBirth();
+  }
+
   postData(data);
 }
 
 function postData(data){
   // TODO
   console.log('POST');
+  console.log(data);
 }
 
 // http://stackoverflow.com/a/12254019
