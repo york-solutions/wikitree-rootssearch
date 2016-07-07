@@ -38,3 +38,7 @@ label {
 input {
   font-size: 1em;
 }
+
+#form {
+  display: none;
+}

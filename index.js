@@ -84,9 +84,11 @@ function convertToRootsSearch(person){
 }
 
 function postData(data){
-  // TODO
-  console.log('POST');
-  console.log(data);
+  var $form = $('#form');
+  for(var a in data){
+    $form.append('<input name="data['+a+']" value="'+data[a]+'">');
+  }
+  $form.submit();
 }
 
 // http://stackoverflow.com/a/12254019
