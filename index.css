@@ -18,3 +18,23 @@ body {
 body:not(.loading) .loading {
   display: none;
 }
+
+body:not(.login) .group.login {
+  display: none;
+}
+
+body.login .group.login {
+  display: block;
+}
+
+.form-row {
+  margin-bottom: .5em;
+}
+
+label {
+  display: block;
+}
+
+input {
+  font-size: 1em;
+}

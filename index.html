@@ -7,10 +7,26 @@
   <body class="loading">
 
     <div class="group loading">
-      <h1>... loading ...</h1>
+      <h2>... loading ...</h2>
       <img src="loader-big2-f0f0f0.gif" />
     </div>
 
+    <div class="group login">
+      <h2>Login</h2>
+      <div class="form-row">
+        <label>Email:</label>
+        <input type="input" id="email" placeholder="email" />
+      </div>
+      <div class="form-row">
+        <label>Password:</label>
+        <input type="password" id="password" placeholder="password" />
+      </div>
+      <button id="login-btn">Login</button>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script src="wikitree.js"></script>
     <script src="index.js"></script>
   </body>
 </html>
