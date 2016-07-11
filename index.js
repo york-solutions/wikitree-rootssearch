@@ -11,28 +11,51 @@ var profileFields = [
   'Spouses'
 ];
 
-var $body = $(document.body);
+var $error = $('.group.error'),
+    $input = $('.group.input'),
+    $loading = $('.group.loading'),
+    $login = $('.group.login');
 
 // Check for query param
 var profileId = getQueryParam('profile');
 
-// Setup button listeners
+// Setup event listeners
 $('#login-btn').click(login);
+$('#input-btn').click(inputLoad);
+$('#profile-id ').keydown(function (e){
+  if(e.keyCode == 13){
+    inputLoad();
+  }
+});
 
 if(!profileId){
-  // TODO: allow the ID to be input?
+  $input.show();
+  $loading.hide();
+} else {
+  start();
 }
 
-// Check WikiTree auth status
-setupLoginResponse(wikitree.checkLogin());
+function start(){
+  $loading.show();
+  setupLoginResponse(wikitree.checkLogin());
+}
 
 function login(){
-  $body.addClass('loading');
-  $body.removeClass('login');
+  $loading.show();
+  $login.hide();
   setupLoginResponse(wikitree.login({
     email: $('#email').val(),
     password: $('#password').val()
   }));
+}
+
+function inputLoad(){
+  profileId = $('#profile-id').val();
+  if(profileId){
+    $input.hide();
+    $error.hide();
+    start();
+  }
 }
 
 /**
@@ -43,13 +66,21 @@ function setupLoginResponse(promise){
 		loadProfile(profileId);
 	})
   .fail(function(){
-    $body.addClass('login');
-    $body.removeClass('loading');
+    $login.show();
+    $loading.hide();
   });
 }
 
 function loadProfile(id){
-  wikitree.getPerson(id, profileFields).then(convertToRootsSearch);
+  wikitree
+    .getPerson(id, profileFields)
+    .done(convertToRootsSearch)
+    .fail(function(error){
+      $error.show();
+      $input.show();
+      $loading.hide();
+      $('#profile-id').focus();
+    });
 }
 
 function convertToRootsSearch(person){

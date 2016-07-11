@@ -6,6 +6,16 @@
   </head>
   <body class="loading">
 
+    <div class="group error">
+      Unable to load the person. Check the ID and try again.
+    </div>
+
+    <div class="group input">
+      <label>Profile Id:</label>
+      <input type="text" id="profile-id" placeholder="Profile ID" />
+      <button id="input-btn">Load</button>
+    </div>
+
     <div class="group loading">
       <h2>... loading ...</h2>
       <img src="loader-big2-f0f0f0.gif" />
@@ -15,7 +25,7 @@
       <h2>Login</h2>
       <div class="form-row">
         <label>Email:</label>
-        <input type="input" id="email" placeholder="email" />
+        <input type="text" id="email" placeholder="email" />
       </div>
       <div class="form-row">
         <label>Password:</label>
@@ -24,9 +34,7 @@
       <button id="login-btn">Login</button>
     </div>
 
-    <form id="form" method="POST" action="https://rootssearch.io/search">
-
-    </form>
+    <form id="form" method="POST" action="https://rootssearch.io/search"></form>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>

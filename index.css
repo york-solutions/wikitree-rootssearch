@@ -11,20 +11,18 @@ body {
   flex-direction: column;
 }
 
+.group {
+  display: none;
+}
+
 .group.loading {
   text-align: center;
-}
-
-body:not(.loading) .loading {
-  display: none;
-}
-
-body:not(.login) .group.login {
-  display: none;
-}
-
-body.login .group.login {
   display: block;
+}
+
+.group.error {
+  padding: 1em;
+  color: #ff3f3f;
 }
 
 .form-row {
@@ -33,6 +31,7 @@ body.login .group.login {
 
 label {
   display: block;
+  font-weight: bold;
 }
 
 input {
