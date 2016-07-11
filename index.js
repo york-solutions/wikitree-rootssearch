@@ -27,6 +27,11 @@ $('#profile-id ').keydown(function (e){
     inputLoad();
   }
 });
+$('#email, #password').keydown(function (e){
+  if(e.keyCode == 13){
+    login();
+  }
+});
 
 if(!profileId){
   $input.show();
