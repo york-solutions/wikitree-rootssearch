@@ -1,5 +1,6 @@
 var profileFields = [
   'FirstName',
+  'RealName',
   'LastNameAtBirth',
   'BirthDate',
   'BirthLocation',
@@ -93,7 +94,7 @@ function convertToRootsSearch(person){
       mother = person.getMother(),
       spouse = person.getSpouse(),
       data = {
-        givenName: person.getFirstName(),
+        givenName: person.getFirstName() || person.getRealName(),
         familyName: person.getLastNameAtBirth(),
         birthPlace: person.getBirthLocation(),
         birthDate: person.getBirthDate(),

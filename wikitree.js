@@ -8,11 +8,11 @@ wikitree.getPersonFSConnections = function(id){
   if(!id){
     throw new Error('Profile ID is required.');
   }
-  
+
   return wikitree._ajax({
     action: 'getPersonFSConnections',
     key: id
-  }, function(data) {           
+  }, function(data) {
     return data[0].connections;
   });
 };
@@ -33,14 +33,14 @@ wikitree.addPersonFSConnection = function(wikiId, fsId, lastModified, certainty)
   if(!certainty){
     throw new Error('Certainty is required.');
   }
-    
+
   return wikitree._ajax({
     action: 'addPersonFSConnection',
     key: wikiId,
     fs_id: fsId,
     fs_modified: lastModified,
     certainty: certainty
-  }, function(data) {           
+  }, function(data) {
     return data[0].connection;
   });
 };
@@ -55,12 +55,12 @@ wikitree.removePersonFSConnection = function(wikiId, fsId){
   if(!fsId){
     throw new Error('FamilySearch ID is required.');
   }
-    
+
   return wikitree._ajax({
     action: 'removePersonFSConnection',
     key: wikiId,
     fs_id: fsId
-  }, function(data) {           
+  }, function(data) {
     return data[0].connection;
   });
 };
@@ -72,7 +72,7 @@ var wikitree = require('./wikitree');
  */
 var Person = wikitree.Person = function(data){
   this._data = data;
-  
+
   // Create person objects for any attached family members
   var relatives = ['Parents', 'Spouses', 'Children', 'Siblings'];
   for(var i = 0; i < relatives.length; i++){
@@ -87,6 +87,10 @@ var Person = wikitree.Person = function(data){
 
 Person.prototype.getFirstName = function(){
   return this._data.FirstName;
+};
+
+Person.prototype.getRealName = function(){
+  return this._data.RealName;
 };
 
 Person.prototype.getMiddleName = function(){
@@ -168,7 +172,7 @@ Person.prototype.getSpouses = function(){
 Person.prototype.getSpouse = function(){
   var spouses = this.getSpouses();
   for(var a in spouses){
-    return spouses[a]; 
+    return spouses[a];
   }
 };
 
@@ -222,20 +226,20 @@ Person.prototype.getPhotoUrl = function(size){
 Person.prototype.setMother = function(person){
   var id = person.getId(),
       oldId = this._data.Mother;
-  
+
   // Store the new mother id
   this._data.Mother = id;
-  
+
   // If the Perants map does not exist yet then create it
   if(!this._data.Parents){
     this._data.Parents = {};
-  } 
-  
+  }
+
   // If the object does exist and there was a previous mother then remove her
   else if(oldId) {
     delete this._data.Parents[oldId];
   }
-  
+
   // Add the new mother to the parents object
   this._data.Parents[id] = person;
 };
@@ -246,20 +250,20 @@ Person.prototype.setMother = function(person){
 Person.prototype.setFather = function(person){
   var id = person.getId(),
       oldId = this._data.Father;
-  
+
   // Store the new father id
   this._data.Father = id;
-  
+
   // If the Perants map does not exist yet then create it
   if(!this._data.Parents){
     this._data.Parents = {};
-  } 
-  
+  }
+
   // If the object does exist and there was a previous father then remove her
   else if(oldId) {
     delete this._data.Parents[oldId];
   }
-  
+
   // Add the new father to the parents object
   this._data.Parents[id] = person;
 };
@@ -292,9 +296,9 @@ function getDateDisplayString(raw){
   if(!raw || !(/\d{4}-\d{2}-\d{2}/.test(raw)) ||  raw === '0000-00-00'){
     return '';
   }
-  
+
   var date = new Date(raw);
-  
+
   // If the date is invalid it means that the day and possibly also
   // the month are "00". We know the year is not "0000" because we
   // tested for that above.
@@ -307,8 +311,8 @@ function getDateDisplayString(raw){
       return year;
     }
     return months[monthInt - 1] + ' ' + year;
-  } 
-  
+  }
+
   // Valid JS date so formatting is easy
   else {
     return months[date.getMonth()] + ' ' + date.getUTCDate() + ', ' + date.getFullYear();
@@ -323,7 +327,7 @@ wikitree.Session = function(opts) {
   this.user_name  = (opts && opts.user_name) ? opts.user_name : cookies.getItem('wikitree_wtb_UserName') || '';
   this.loggedIn  = false;
 };
-  
+
 /**
  * Define new method for Session objects to check the current login.
  * Return a promise object (from our .ajax() call) so we can do things when this resolves.
@@ -334,7 +338,7 @@ wikitree.checkLogin = function (opts){
 
   if (opts && opts.user_id) { session.user_id = opts.user_id; }
   if (opts && opts.user_name) { session.user_name = opts.user_name; }
-  
+
   var data = { 'action': 'login', 'user_id': session.user_id };
   var deferred = $.Deferred();
   var request = wikitree._ajax(data);
@@ -342,19 +346,19 @@ wikitree.checkLogin = function (opts){
   request
     // Local success handling to set our cookies.
     .done(function(data) {
-      if (data.login.result == session.user_id) { 
+      if (data.login.result == session.user_id) {
         cookies.setItem('wikitree_wtb_UserID', session.user_id);
         cookies.setItem('wikitree_wtb_UserName', session.user_name);
         session.loggedIn = true;
         deferred.resolve();
-      } else { 
+      } else {
         cookies.removeItem('wikitree_wtb_UserID');
         cookies.removeItem('wikitree_wtb_UserName');
         session.loggedIn = false;
         deferred.reject();
       }
     })
-    .fail(function(xhr, status) { 
+    .fail(function(xhr, status) {
       cookies.removeItem('wikitree_wtb_UserID');
       cookies.removeItem('wikitree_wtb_UserName');
       session.loggedIn = false;
@@ -363,9 +367,9 @@ wikitree.checkLogin = function (opts){
 
   return deferred.promise();
 };
-  
+
 /**
- * Do an actual login through the server API with an Ajax call. 
+ * Do an actual login through the server API with an Ajax call.
  */
 wikitree.login = function(opts) {
   var session = this.session;
@@ -381,7 +385,7 @@ wikitree.login = function(opts) {
     // On successful POST return, check our data. Note from that data whether the login itself was
     // successful (setting session cookies if so). Call the user callback function when done.
     .done(function(data) {
-      if (data.login.result == 'Success') { 
+      if (data.login.result == 'Success') {
         session.user_id   = data.login.userid;
         session.user_name = data.login.username;
         session.loggedIn = true;
@@ -397,7 +401,7 @@ wikitree.login = function(opts) {
     });
 
   return deferred.promise();
-  
+
 };
 
 /**
@@ -453,15 +457,15 @@ wikitree.session = new wikitree.Session();
  * Get a person from the specified id
  */
 wikitree.getPerson = function(personId, fields){
-  var data = { 
-    'action': 'getPerson', 
+  var data = {
+    'action': 'getPerson',
     'key': personId,
     'format': 'json'
   };
   if(fields){
     data.fields = fields;
   }
-  return wikitree._ajax(data, function(data) {           
+  return wikitree._ajax(data, function(data) {
     return new wikitree.Person(data[0].person);
   });
 };
@@ -504,11 +508,11 @@ wikitree.getProfile = function(id){
   if(!id){
     throw new Error('Profile ID is required.');
   }
-  
+
   return wikitree._ajax({
     action: 'getProfile',
     key: id
-  }, function(data) {           
+  }, function(data) {
     return new wikitree.Person(data[0].profile);
   });
 };
@@ -528,17 +532,17 @@ wikitree.getAncestors = function(id, depth){
   if(depth && depth >=1 && depth <= 10){
     data.depth = depth;
   }
-  
+
   return wikitree._ajax(data, function(data){
     var list = [],
         map = {};
-        
+
     utils.each(data[0].ancestors, function(ancestor){
       var person = new wikitree.Person(ancestor);
       list.push(person);
       map[person.getId()] = person;
     });
-    
+
     utils.each(list, function(person){
       var father = map[person.getFatherId()],
           mother = map[person.getMotherId()];
@@ -549,7 +553,7 @@ wikitree.getAncestors = function(id, depth){
         person.setMother(mother);
       }
     });
-    
+
     return list;
   });
 };
@@ -583,7 +587,7 @@ wikitree.getRelatives = function(ids, parents, spouses, children, siblings){
  * Return a promise
  */
 wikitree._ajax = function(opts, success){
-  
+
   if(!opts){
     opts = {};
   }
@@ -592,22 +596,22 @@ wikitree._ajax = function(opts, success){
     opts.api_key = this.API_KEY;
     opts.api_code = this.API_CODE;
   }
-  
+
   if(opts.fields){
     opts.fields = opts.fields.join(',');
   }
-  
+
   var deferred = $.Deferred();
-  
+
   $.ajax({
     url: wikitree.API_DOMAIN + wikitree.API_URL,
     crossDomain: true,
-    xhrFields: { withCredentials: true }, 
+    xhrFields: { withCredentials: true },
     type: 'POST',
     dataType: 'json',
     data: opts
   }).then(function(response){
-    
+
     // If the success param is called then we're using the shortcut
     // version which globalizes error handling.
     if(success){
@@ -624,7 +628,7 @@ wikitree._ajax = function(opts, success){
   }, function(){
     deferred.reject('Error in API query');
   });
-  
+
   return deferred.promise();
 };
 },{"./FS":1,"./Person":2,"./Session":3,"./utils":4}],6:[function(require,module,exports){
