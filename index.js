@@ -122,7 +122,10 @@ function convertToRootsSearch(person){
 function postData(data){
   var $form = $('#form');
   for(var a in data){
-    $form.append('<input name="data['+a+']" value="'+data[a]+'">');
+    // Ignore empty fields
+    if(data[a]){
+      $form.append('<input name="data['+a+']" value="'+data[a]+'">');
+    }
   }
   $form.submit();
 }
