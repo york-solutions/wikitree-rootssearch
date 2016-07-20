@@ -9,7 +9,8 @@ var profileFields = [
   'Father',
   'Mother',
   'Parents',
-  'Spouses'
+  'Spouses',
+  'Privacy'
 ];
 
 var $error = $('.group.error'),
@@ -43,16 +44,22 @@ if(!profileId){
 
 function start(){
   $loading.show();
-  setupLoginResponse(wikitree.checkLogin());
+  loadProfile(profileId);
 }
 
 function login(){
   $loading.show();
   $login.hide();
-  setupLoginResponse(wikitree.login({
+  wikitree.login({
     email: $('#email').val(),
     password: $('#password').val()
-  }));
+  }).done(function() {
+		loadProfile(profileId);
+	})
+  .fail(function(){
+    $login.show();
+    $loading.hide();
+  });
 }
 
 function inputLoad(){
@@ -65,22 +72,39 @@ function inputLoad(){
 }
 
 /**
- * Common response handler for checkLogin and login
+ * Load a person from the WikiTree API. If the profile is restricted and the
+ * user isn't logged in then ask the user to login and load the profile again.
+ * We do this in case the user is on the profile's Trusted List and therefore
+ * has access to more info than the public does.
+ *
+ * @param  {String} id
  */
-function setupLoginResponse(promise){
-  promise.done(function() {
-		loadProfile(profileId);
-	})
-  .fail(function(){
-    $login.show();
-    $loading.hide();
-  });
-}
-
 function loadProfile(id){
   wikitree
     .getPerson(id, profileFields)
-    .done(convertToRootsSearch)
+    .done(function(person){
+
+      // If the profile is public then continue to RootsSearch
+      if(person.getPrivacy() === '50' || person.getPrivacy() === '60'){
+        convertToRootsSearch(person);
+      }
+
+      // If the profile isn't public then check the login status.
+      else {
+        wikitree.checkLogin()
+
+        // If the user is logged in then continue; we have all the data the user has rights to access
+        .done(function(){
+          convertToRootsSearch(person);
+        })
+
+        // If the user isn't logged in then log them in and try again
+        .fail(function(){
+          $login.show();
+          $loading.hide();
+        });
+      }
+    })
     .fail(function(error){
       $error.show();
       $input.show();
