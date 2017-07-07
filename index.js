@@ -121,9 +121,9 @@ function convertToRootsSearch(person){
         givenName: person.getFirstName() || person.getRealName(),
         familyName: person.getLastNameAtBirth(),
         birthPlace: person.getBirthLocation(),
-        birthDate: person.getBirthDate(),
+        birthDate: fixDate(person.getBirthDate()),
         deathPlace: person.getDeathLocation(),
-        deathDate: person.getDeathDate(),
+        deathDate: fixDate(person.getDeathDate()),
       };
 
   if(father){
@@ -142,6 +142,18 @@ function convertToRootsSearch(person){
   }
 
   postData(data);
+}
+
+/**
+ * WikiTree supports partial dates which are denoted with 00 for the month or day.
+ * But those don't work well with RootsSearch or any other system so we remove the 00.
+ * 
+ * @param {String} date 
+ */
+function fixDate(date){
+  if(date){
+    return date.replace(/-00/g, '');
+  }
 }
 
 function postData(data){
