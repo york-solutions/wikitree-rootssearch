@@ -446,7 +446,7 @@ var utils = require('./utils');
 
 var wikitree = module.exports = {
   API_URL: '/api.php',
-  API_DOMAIN: 'https://apps.wikitree.com',
+  API_DOMAIN: 'https://api.wikitree.com',
   API_KEY: null,
   API_CODE: null
 };
